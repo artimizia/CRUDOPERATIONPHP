@@ -1,3 +1,4 @@
+
 <?php
   session_start();
   include "db_conn.php";
@@ -28,6 +29,7 @@ input[type=text], input[type=number] {
 }
 
 </style>
+<?php if(isset($_SESSION['user_name']) && isset($_SESSION['password'])){?>
 <form  method="POST" action="updateInsertProduct.php">
 <div class="container">
 <label for="sku"><b>SKU</b></label>
@@ -45,3 +47,4 @@ input[type=text], input[type=number] {
 <input type="submit" >
 </div>
 </form>
+<?php } ?>

@@ -56,6 +56,7 @@ function updateRow(sku){
     }
 </style>
 </head>
+<?php if(isset($_SESSION['user_name']) && isset($_SESSION['password'])){?>
 <body>
 <div class="flex header">	<h1>Hello, <?php echo $_SESSION['user_name'];?></h1>
 	<a href="logout.php">Logout</a></div>
@@ -149,5 +150,6 @@ function updateRow(sku){
     </tbody>
 </table>
 </body>
+<?php } ?>
 </html>
 

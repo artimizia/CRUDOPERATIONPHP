@@ -1,4 +1,5 @@
 <?php
+  session_start();
   include "db_conn.php";
 ?>
 <style>
@@ -15,6 +16,7 @@ input[type=text], input[type=password] {
 }
 
 </style>
+<?php if(isset($_SESSION['user_name']) && isset($_SESSION['password'])){?>
 <form method="post" action="CreateUser.php">
 <div class="container">
 <label for="username"><b>Username</b></label>
@@ -26,3 +28,4 @@ input[type=text], input[type=password] {
 <input type="submit" >
 </div>
 </form>
+<?php } ?>

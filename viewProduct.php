@@ -1,4 +1,5 @@
 <?php
+  session_start();
   include "db_conn.php";
   $sku = $_GET["sku"];
   $sql = "Select * from products WHERE SKU='$sku'";
