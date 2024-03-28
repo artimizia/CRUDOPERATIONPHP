@@ -4,7 +4,6 @@
   $username=   $_POST['username'];
   $password=   $_POST['password'];
 
-
 if(empty($username)){
   header("Location:addUser.php?error=User name is required");
   exit();
@@ -20,6 +19,7 @@ if(isset( $_POST['admin'])){
 }else{
   $admin="0";
 }
+
 try{
 $result="";
 $sql = "INSERT INTO users (user_name, password, admin)VALUES ( '$username', '$password', '$admin');";
@@ -28,8 +28,6 @@ $result=mysqli_query($conn,$sql);
   echo '<script>alert("exception occured")</script>'; 
   //echo "exception occured '$result'".$e;
 }
-
-
 header("Location:home.php");
 exit();
 ?>

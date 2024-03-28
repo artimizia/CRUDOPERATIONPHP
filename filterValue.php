@@ -12,7 +12,6 @@ $res=mysqli_query($conn,$sql);
 while($r = mysqli_fetch_assoc($res)) {
     $rows[] = $r;
 }
-//print json_encode($rows);
 if(empty($rows)){
 	echo "";
 	return;

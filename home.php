@@ -33,10 +33,9 @@ $users=mysqli_query($conn,$usrstmt);?>
 // }
 function confirmationBox(sku) {
   if (confirm('delete?')) {
-  // Save it!
   deleteProduct(sku);
   } 
-}
+
 function filterTable(filterValue){
        $.ajax({
             url:"filterValue.php",    
@@ -107,7 +106,6 @@ function filterTable(filterValue){
                 actionCell.appendChild(btn);
                 }
              
-
                 row.appendChild(actionCell);
 
                 tableBody.appendChild(row); 
@@ -122,16 +120,18 @@ function filterTable(filterValue){
             }
         });
    }
+
 function updateProduct(sku){
 	window.location.href="updateProduct.php?sku="+sku;
 
 }
+
 function viewProduct(sku){
     window.location.href="viewProduct.php?sku="+sku;
 
 }
+
 function deleteProduct(sku){
-	console.log("comes to ajax delete product");
 	     $.ajax({
             url:"deleteProducts.php",    
             type: "post",    
@@ -147,7 +147,6 @@ function deleteProduct(sku){
 }
 
 function deleteUser(username){
-	    console.log("delete user");
 	    $.ajax({
             url:"deleteUser.php",    
             type: "post",
@@ -161,8 +160,8 @@ function deleteUser(username){
             }
         });
 }
-
 </script>
+
 <title>Home</title>
 <style type="text/css">
 	.flex 
@@ -216,9 +215,7 @@ function deleteUser(username){
     <?php } ?>
     </tbody>
 </table>
-
-	 <?php } ?>
-	
+<?php } ?>
 <br/>
 <br/>
 </br/>

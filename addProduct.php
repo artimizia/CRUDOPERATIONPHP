@@ -4,8 +4,6 @@
 ?>
 <style>
 body {font-family: Arial, Helvetica, sans-serif;}
-
-
 input[type=text],[type=number],select {
   width: 100%;
   padding: 12px 20px;
@@ -14,8 +12,8 @@ input[type=text],[type=number],select {
   border: 1px solid #ccc;
   box-sizing: border-box;
 }
-
 </style>
+
 <?php if(isset($_SESSION['user_name']) && isset($_SESSION['password'])){?>
 <form method="post" action="CreateProduct.php">
 <div class="container">
