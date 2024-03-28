@@ -7,7 +7,8 @@
   foreach ($products as $i => $product) {
     $sku = $product['SKU'];
     $productName = $product['Product_Name'];
-    $price = $product['Price'];
+    $salePrice = $product['sale_price'];
+    $regularPrice = $product['regular_price'];
     $stockQty = $product['Stock_Qty'];
     $image = $product['Image'];
     $category = $product['Category'];
@@ -28,14 +29,17 @@ input[type=text] {
 }
 
 </style>
+<?php if(isset($_SESSION['user_name']) && isset($_SESSION['password'])){?>
 <form  action="home.php">
 <div class="container">
 <label for="sku"><b>SKU</b></label>
 <input type="text" value="<?PHP echo $sku; ?>" name="sku"readonly>
 <label for="productName"><b>Product Name</b></label>
 <input type="text" value="<?PHP echo $productName; ?>"name="productName"readonly>
-<label for="price"><b>price </b></label>
-<input type="text" value="<?PHP echo $price; ?>" name="price" readonly>
+<label for="salePrice"><b>sale price </b></label>
+<input type="text" value="<?PHP echo $salePrice; ?>" name="salePrice" readonly>
+<label for="regularPrice"><b>regular price </b></label>
+<input type="text" value="<?PHP echo $regularPrice; ?>" name="regularPrice" readonly>
 <label for="category"><b>category </b></label>
 <input type="text" value="<?PHP echo $category; ?>" name="category" readonly>
 <label for="image"><b>Image </b></label>
@@ -45,3 +49,4 @@ input[type=text] {
 <input type="submit" >
 </div>
 </form>
+<?php } ?>

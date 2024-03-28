@@ -3,7 +3,7 @@
   include "db_conn.php";
   $username=   $_POST['username'];
   $password=   $_POST['password'];
-  $admin=   $_POST['admin'];
+
 
 if(empty($username)){
   header("Location:addUser.php?error=User name is required");
@@ -14,9 +14,11 @@ if(empty($password)){
   header("Location:addUser.php?error=password is required");
   exit();
 }
-if(is_null($admin)){
-  header("Location:addUser.php?error=admin is required");
-  exit();
+if(isset( $_POST['admin'])){
+
+  $admin="1";
+}else{
+  $admin="0";
 }
 try{
 $result="";

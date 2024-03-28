@@ -23,8 +23,8 @@ input[type=text], input[type=password] {
 <input type="text" name="username">
 <label for="password"><b>Password</b></label>
 <input type="text" name="password">
-<label for="admin"><b>Admin or not </b></label>
-<input type="text" name="admin">
+<label for="admin"><b>is it an Admin? </b></label>
+<input type="checkbox" name="admin" value="1">
 <input type="submit" >
 </div>
 </form>
