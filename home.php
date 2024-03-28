@@ -11,6 +11,7 @@ $users=mysqli_query($conn,$usrstmt);?>
 <head>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
+
 // // function filterTable(filterValue) {
 //   console.log("filter value"+filterValue);
 //   table = document.getElementById("productTable");
@@ -35,6 +36,7 @@ function confirmationBox(sku) {
   if (confirm('delete?')) {
   deleteProduct(sku);
   } 
+}
 
 function filterTable(filterValue){
        $.ajax({
@@ -44,91 +46,81 @@ function filterTable(filterValue){
             data: ({category: filterValue}),
             timeout:5000,
             success:function(result){
-                console.log("comes inside success");
                 $("#productTable tbody tr").remove(); 
                 tableBody = document.getElementById("tableBody");
-                console.log(Object.keys(result).length);
-            if(Object.keys(result).length> 0){
-            result.forEach(function(item) { 
-                var row = document.createElement("tr"); 
-                var imageCell = document.createElement("td"); 
-                var productName = item.Product_Name;
-                var image = item.Image;
-                var img = document.createElement("img"); 
-                img.alt= productName;
-                img.src =image;
-                var sku = item.SKU;
-                imageCell.appendChild(img);
-                imageCell.onclick=function(){ updateProduct(sku); } ;
-                row.appendChild(imageCell); 
+             if(Object.keys(result).length> 0){
+                for(var item in result) {
+                     var row = document.createElement("tr"); 
+                     var imageCell = document.createElement("td"); 
+                     var productName = result[item].Product_Name;
+                     var image = result[item].Image;
+                     console.log("test"+result[item].Product_Name);
+                     var img = document.createElement("img"); 
+                     img.alt= productName;
 
-                var nameCell = document.createElement("td"); 
-                nameCell.textContent = item.Product_Name; 
-                 nameCell.onclick=function(){ updateProduct(sku); } ;
-                row.appendChild(nameCell); 
+                     img.src =image;
+                    var sku = result[item].SKU;
+                    imageCell.appendChild(img);
+                    imageCell.onclick=function(){ updateProduct(sku); } ;
+                    row.appendChild(imageCell); 
+                    var nameCell = document.createElement("td"); 
+                    nameCell.textContent = result[item].Product_Name; 
+                    nameCell.onclick=function(){ updateProduct(sku); } ;
 
+                    row.appendChild(nameCell); 
+                    var priceCell = document.createElement("td"); 
+                    priceCell.textContent = result[item].sale_price >0? result[item].sale_price:result[item].regular_price;
+                    priceCell.onclick=function(){ updateProduct(sku); } ;
+                    row.appendChild(priceCell); 
+                    var skuCell = document.createElement("td"); 
+                    skuCell.textContent = result[item].SKU; 
+                    skuCell.onclick=function(){ updateProduct(sku); } ;
+                    row.appendChild(skuCell); 
 
-                var priceCell = document.createElement("td"); 
-                priceCell.textContent = item.sale_price >0? item.sale_price:item.regular_price;
-                priceCell.onclick=function(){ updateProduct(sku); } ;
-                row.appendChild(priceCell); 
-
-                var skuCell = document.createElement("td"); 
-                skuCell.textContent = item.SKU; 
-                skuCell.onclick=function(){ updateProduct(sku); } ;
-                row.appendChild(skuCell); 
-
-            
-                var categoryCell = document.createElement("td"); 
-                categoryCell.textContent = item.Category;
-                categoryCell.onclick=function(){ updateProduct(sku); } ;
-                row.appendChild(categoryCell); 
-
-                var actionCell = document.createElement("td"); 
-                var viewProductButton = document.createElement('input');
-                viewProductButton.type = "button";
-                viewProductButton.value="view";
-                viewProductButton.onclick = function() {viewProduct(sku);};
-                actionCell.appendChild(viewProductButton);
-                var admin = '<?php echo $_SESSION['admin']?>';
-                console.log("admin is "+admin);
-                if(admin ==1){
-                var updateProductButton = document.createElement('input');
-                updateProductButton.type = "button";
-                updateProductButton.value="update";
-                updateProductButton.onclick = function() {updateProduct(sku);};
-                actionCell.appendChild(updateProductButton);
-
-                var btn = document.createElement('input');
-                btn.type = "button";
-                btn.value = "delete";
-                btn.onclick = function() {confirmationBox(sku);};
-                actionCell.appendChild(btn);
+                    var categoryCell = document.createElement("td"); 
+                    categoryCell.textContent = result[item].Category;
+                    categoryCell.onclick=function(){ updateProduct(sku);} ;
+                    row.appendChild(categoryCell); 
+                    var actionCell = document.createElement("td"); 
+                    var viewProductButton = document.createElement('input');
+                    viewProductButton.type = "button";
+                    viewProductButton.value="view";
+                    viewProductButton.onclick = function() {viewProduct(sku);};
+                    actionCell.appendChild(viewProductButton);
+                    var admin = '<?php echo $_SESSION['admin']?>';
+                    if(admin == 1){
+                        console.log("comes in admin");
+                        var updateProductButton = document.createElement('input');
+                        updateProductButton.type = "button";
+                        updateProductButton.value="update";
+                        updateProductButton.onclick = function() {updateProduct(sku);}
+                        actionCell.appendChild(updateProductButton);
+                        var btn = document.createElement('input');
+                        btn.type = "button";
+                        btn.value = "delete";
+                        btn.onclick = function() {confirmationBox(sku);};
+                    }
+                    console.log(typeof admin);
+                    actionCell.appendChild(btn);
+                    row.appendChild(actionCell);
+                    tableBody.appendChild(row); 
                 }
-             
-                row.appendChild(actionCell);
-
-                tableBody.appendChild(row); 
-               }); 
-        }
-
               
+             }
             },
             error:function(result){
-            $("#productTable tbody tr").remove(); 
-             console.log("filter failure"+JSON.stringify(result));
+                $("#productTable tbody tr").remove(); 
+                     console.log("filter failure"+JSON.stringify(result));
             }
         });
    }
 
 function updateProduct(sku){
 	window.location.href="updateProduct.php?sku="+sku;
-
 }
 
 function viewProduct(sku){
     window.location.href="viewProduct.php?sku="+sku;
-
 }
 
 function deleteProduct(sku){
@@ -160,6 +152,7 @@ function deleteUser(username){
             }
         });
 }
+
 </script>
 
 <title>Home</title>
@@ -231,7 +224,6 @@ function deleteUser(username){
    </select>
    <br/>
    <br/>
-
 	<table id ="productTable"class="table">
     <thead>
     <tr>
