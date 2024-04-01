@@ -19,9 +19,9 @@ input[type=text], input[type=password] {
 <form method="post" action="CreateUser.php">
 <div class="container">
 <label for="username"><b>Username</b></label>
-<input type="text" name="username">
+<input type="text" name="username" required>
 <label for="password"><b>Password</b></label>
-<input type="text" name="password">
+<input type="text" name="password" required>
 <label for="admin"><b>is it an Admin? </b></label>
 <input type="checkbox" name="admin" value="1">
 <input type="submit" >
