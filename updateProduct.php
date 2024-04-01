@@ -3,7 +3,7 @@
   session_start();
   include "db_conn.php";
   $sku=   $_GET['sku'];
-  $sql = "Select sku,productName,salePrice,regularPrice,stockQty,image,category FROM products WHERE SKU='$sku'";
+  $sql = "Select SKU,Product_Name,sale_price,regular_price,Stock_Qty,Image,Category FROM products WHERE SKU='$sku'";
   $products=mysqli_query($conn,$sql);
   foreach ($products as $i => $product) {
     $sku = $product['SKU'];
