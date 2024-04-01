@@ -2,7 +2,7 @@
   session_start();
   include "db_conn.php";
   $username=   $_GET['user_name'];
-  $sql = "Select * FROM users WHERE user_name='$username'";
+  $sql = "Select $user_name,$password,$admin FROM users WHERE user_name='$username'";
   $users=mysqli_query($conn,$sql);
   foreach ($users as $i => $user) {
     $user_name = $user['user_name'];
