@@ -52,33 +52,33 @@ function filterTable(filterValue){
                 for(var item in result) {
                      var row = document.createElement("tr"); 
                      var imageCell = document.createElement("td"); 
-                     var productName = result[item].Product_Name;
-                     var image = result[item].Image;
-                     console.log("test"+result[item].Product_Name);
+                     var productName = result[item].productName;
+                     var image = result[item].image;
+                     console.log("test"+result[item].productName);
                      var img = document.createElement("img"); 
                      img.alt= productName;
 
                      img.src =image;
-                    var sku = result[item].SKU;
+                    var sku = result[item].sku;
                     imageCell.appendChild(img);
                     imageCell.onclick=function(){ updateProduct(sku); } ;
                     row.appendChild(imageCell); 
                     var nameCell = document.createElement("td"); 
-                    nameCell.textContent = result[item].Product_Name; 
+                    nameCell.textContent = result[item].productName; 
                     nameCell.onclick=function(){ updateProduct(sku); } ;
 
                     row.appendChild(nameCell); 
                     var priceCell = document.createElement("td"); 
-                    priceCell.textContent = result[item].sale_price >0? result[item].sale_price:result[item].regular_price;
+                    priceCell.textContent = result[item].salePrice >0? result[item].salePrice:result[item].regularPrice;
                     priceCell.onclick=function(){ updateProduct(sku); } ;
                     row.appendChild(priceCell); 
                     var skuCell = document.createElement("td"); 
-                    skuCell.textContent = result[item].SKU; 
+                    skuCell.textContent = result[item].sku; 
                     skuCell.onclick=function(){ updateProduct(sku); } ;
                     row.appendChild(skuCell); 
 
                     var categoryCell = document.createElement("td"); 
-                    categoryCell.textContent = result[item].Category;
+                    categoryCell.textContent = result[item].category;
                     categoryCell.onclick=function(){ updateProduct(sku);} ;
                     row.appendChild(categoryCell); 
                     var actionCell = document.createElement("td"); 
@@ -141,7 +141,7 @@ function deleteUser(username){
 	    $.ajax({
             url:"deleteUser.php",    
             type: "post",
-            data: ({user_name: username}),
+            data: ({userName: username}),
             timeout:5000,
             success:function(result){
                 window.location.reload();
@@ -174,9 +174,9 @@ function deleteUser(username){
     }
 </style>
 </head>
-<?php if(isset($_SESSION['user_name']) && isset($_SESSION['password'])){?>
+<?php if(isset($_SESSION['userName']) && isset($_SESSION['password'])){?>
 <body>
-<div class="flex header">	<h1>Hello, <?php echo $_SESSION['user_name'];?></h1>
+<div class="flex header">	<h1>Hello, <?php echo $_SESSION['userName'];?></h1>
 	<a href="logout.php">Logout</a></div>
 	<?php if($_SESSION['admin']==1){?>
 	<p>
@@ -195,12 +195,12 @@ function deleteUser(username){
     <?php foreach ($users as $i => $user) { ?>
         <tr>
             <th scope="row"><?php echo $i + 1 ?></th>
-            <td><?php echo $user['user_name'] ?></td>
+            <td><?php echo $user['userName'] ?></td>
             <td><?php echo  crypt($user['password'] , 'st')?></td>
             <td>
             	
-                <a href="editUser.php?user_name=<?php echo $user['user_name'] ?>" >Edit</a>
-                <button onclick="deleteUser('<?php echo $user['user_name'];?>')">Delete</button>
+                <a href="editUser.php?userName=<?php echo $user['userName'] ?>" >Edit</a>
+                <button onclick="deleteUser('<?php echo $user['userName'];?>')">Delete</button>
                 
             </td>
         </tr>
@@ -239,19 +239,19 @@ function deleteUser(username){
     <?php foreach ($products as $i => $product) { ?>
         <tr  >
             <td>
-                <?php if ($product['Image']): ?>
-                    <img src="/<?php echo $product['Image'] ?>" alt="<?php echo $product['Product_Name'] ?>" >
+                <?php if ($product['image']): ?>
+                    <img src="/<?php echo $product['image'] ?>" alt="<?php echo $product['productName'] ?>" >
                 <?php endif; ?>
             </td>
-            <td onclick="updateProduct('<?php echo $product['SKU'];?>')"><?php echo $product['Product_Name'] ?></td>
-            <td onclick="updateProduct('<?php echo $product['SKU'];?>')"><?php echo $product['sale_price'] >0 ?$product['sale_price']:$product['regular_price']?></td>
-            <td onclick="updateProduct('<?php echo $product['SKU'];?>')"><?php echo $product['SKU'] ?></td>
-            <td onclick="updateProduct('<?php echo $product['SKU'];?>')"><?php echo $product['Category'] ?></td>
+            <td onclick="updateProduct('<?php echo $product['sku'];?>')"><?php echo $product['productName'] ?></td>
+            <td onclick="updateProduct('<?php echo $product['sku'];?>')"><?php echo $product['salePrice'] >0 ?$product['salePrice']:$product['regularPrice']?></td>
+            <td onclick="updateProduct('<?php echo $product['sku'];?>')"><?php echo $product['sku'] ?></td>
+            <td onclick="updateProduct('<?php echo $product['sku'];?>')"><?php echo $product['category'] ?></td>
             <td>
-            	<button onclick="viewProduct('<?php echo $product['SKU'];?>')">View</button>
+            	<button onclick="viewProduct('<?php echo $product['sku'];?>')">View</button>
             	<?php if($_SESSION['admin']==1){?>
-                <button onclick="updateProduct('<?php echo $product['SKU'];?>')">Update</button>
-                <button onclick="confirmationBox('<?php echo $product['SKU'];?>')">Delete</button>
+                <button onclick="updateProduct('<?php echo $product['sku'];?>')">Update</button>
+                <button onclick="confirmationBox('<?php echo $product['sku'];?>')">Delete</button>
                 <?php } ?>
             </td>
         </tr>

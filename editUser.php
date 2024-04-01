@@ -1,11 +1,11 @@
 <?php
   session_start();
   include "db_conn.php";
-  $username=   $_GET['user_name'];
-  $sql = "Select user_name,password,admin FROM users WHERE user_name='$username'";
+  $username=   $_GET['userName'];
+  $sql = "Select userName,password,admin FROM users WHERE userName='$username'";
   $users=mysqli_query($conn,$sql);
   foreach ($users as $i => $user) {
-    $user_name = $user['user_name'];
+    $userName = $user['userName'];
     $password = $user['password'];
     $admin = $user['admin'];
 
@@ -24,7 +24,7 @@ input[type=text], input[type=password] {
 }
 </style>
 
-<?php if(isset($_SESSION['user_name']) && isset($_SESSION['password'])){?>
+<?php if(isset($_SESSION['userName']) && isset($_SESSION['password'])){?>
 <form method="post" action="updateUser.php">
 <div class="container">
 <label for="username"><b>Username</b></label>

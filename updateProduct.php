@@ -3,16 +3,16 @@
   session_start();
   include "db_conn.php";
   $sku=   $_GET['sku'];
-  $sql = "Select SKU,Product_Name,sale_price,regular_price,Stock_Qty,Image,Category FROM products WHERE SKU='$sku'";
+  $sql = "Select sku,productName,salePrice,regularPrice,stockQty,image,category FROM products WHERE sku='$sku'";
   $products=mysqli_query($conn,$sql);
   foreach ($products as $i => $product) {
-    $sku = $product['SKU'];
-    $productName = $product['Product_Name'];
-    $regularPrice = $product['regular_price'];
-    $salePrice = $product['sale_price'];
-    $stockQty = $product['Stock_Qty'];
-    $image = $product['Image'];
-    $category = $product['Category'];
+    $sku = $product['sku'];
+    $productName = $product['productName'];
+    $regularPrice = $product['regularPrice'];
+    $salePrice = $product['salePrice'];
+    $stockQty = $product['stockQty'];
+    $image = $product['image'];
+    $category = $product['category'];
   }
 
 ?>
@@ -30,7 +30,7 @@ input[type=text], input[type=number] ,select  {
 }
 
 </style>
-<?php if(isset($_SESSION['user_name']) && isset($_SESSION['password'])){?>
+<?php if(isset($_SESSION['userName']) && isset($_SESSION['password'])){?>
 <form  method="POST" action="updateInsertProduct.php">
 <div class="container">
 <label for="sku"><b>SKU</b></label>

@@ -8,7 +8,7 @@
   $category=$_POST['category'];
   $image=$_POST['image'];
   $stockQty=$_POST['stockQty'];
-  $sql ="Update products SET Product_Name='$productName', regular_price='$regularPrice',sale_price='$salePrice',Category='$category',Image='$image',Stock_Qty='$stockQty' WHERE SKU='$sku'";
+  $sql ="Update products SET productName='$productName', regularPrice='$regularPrice',salePrice='$salePrice',category='$category',image='$image',stockQty='$stockQty' WHERE sku='$sku'";
   $product=mysqli_query($conn,$sql);
   echo $product;
   header("Location:home.php");

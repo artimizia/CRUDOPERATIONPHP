@@ -2,16 +2,16 @@
   session_start();
   include "db_conn.php";
   $sku = $_GET["sku"];
-  $sql = "Select SKU,Product_Name,sale_price,regular_price,Stock_Qty,Image,Category from products WHERE SKU='$sku'";
+  $sql = "Select sku,productName,salePrice,regularPrice,stockQty,image,category from products WHERE sku='$sku'";
   $products=mysqli_query($conn,$sql);
   foreach ($products as $i => $product) {
-    $sku = $product['SKU'];
-    $productName = $product['Product_Name'];
-    $salePrice = $product['sale_price'];
-    $regularPrice = $product['regular_price'];
-    $stockQty = $product['Stock_Qty'];
-    $image = $product['Image'];
-    $category = $product['Category'];
+    $sku = $product['sku'];
+    $productName = $product['productName'];
+    $salePrice = $product['salePrice'];
+    $regularPrice = $product['regularPrice'];
+    $stockQty = $product['stockQty'];
+    $image = $product['image'];
+    $category = $product['category'];
 
   }
 ?>
@@ -27,7 +27,7 @@ input[type=text] {
 }
 </style>
 
-<?php if(isset($_SESSION['user_name']) && isset($_SESSION['password'])){?>
+<?php if(isset($_SESSION['userName']) && isset($_SESSION['password'])){?>
 <form  action="home.php">
 <div class="container">
 <label for="sku"><b>SKU</b></label>

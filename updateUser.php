@@ -8,7 +8,7 @@
   }else{
     $admin="0";
   }
-  $sql = "Update users SET password='$password', admin='$admin' WHERE user_name='$username'";
+  $sql = "Update users SET password='$password', admin='$admin' WHERE userName='$username'";
   $users=mysqli_query($conn,$sql);
   header("Location:home.php");
   exit();
