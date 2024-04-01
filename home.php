@@ -99,9 +99,8 @@ function filterTable(filterValue){
                         btn.type = "button";
                         btn.value = "delete";
                         btn.onclick = function() {confirmationBox(sku);};
+                        actionCell.appendChild(btn);
                     }
-                    console.log(typeof admin);
-                    actionCell.appendChild(btn);
                     row.appendChild(actionCell);
                     tableBody.appendChild(row); 
                 }

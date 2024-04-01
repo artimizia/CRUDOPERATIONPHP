@@ -32,7 +32,7 @@ input[type=text], input[type=password] {
 <label for="password"><b>Password</b></label>
 <input type="password" value="<?PHP echo $password; ?>" name="password">
 <label for="admin"><b>is it an Admin? </b></label>
-<input type="checkbox" name="admin" value="1">
+<input type="checkbox" name="admin" value="<?PHP echo $admin;?>" <?php if ( $admin==1 ) echo 'checked'; ?>>
 <input type="submit" >
 </div>
 </form>
