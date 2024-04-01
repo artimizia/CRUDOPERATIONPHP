@@ -15,7 +15,7 @@ input[type=text],[type=number],select {
 </style>
 
 <?php if(isset($_SESSION['user_name']) && isset($_SESSION['password'])){?>
-<form method="post" action="CreateProduct.php">
+<form method="post" action="createProduct.php">
 <div class="container">
 <label for="sku"><b>SKU</b></label>
 <input type="text" name="sku" required>
