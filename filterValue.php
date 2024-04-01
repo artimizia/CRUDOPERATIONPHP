@@ -12,10 +12,6 @@ $res=mysqli_query($conn,$sql);
 while($r = mysqli_fetch_assoc($res)) {
     $rows[] = $r;
 }
-if(empty($rows)){
-	echo "";
-	return;
-}
 $products = json_encode($rows);
 echo $products;
 ?>

@@ -1,7 +1,6 @@
 <?php
   session_start();
   include "db_conn.php";
-  //var_dump($_POST);
   $sku=$_POST['sku'];
   $productName=$_POST['productName'];
   $regularPrice=$_POST['regularPrice'];
