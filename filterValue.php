@@ -3,9 +3,9 @@ session_start();
 include "db_conn.php";
 $category=   $_POST['category'];
 if($category==="all"){
-	$sql = "Select sku,productName,salePrice,regularPrice,stockQty,image,$category FROM products";
+	$sql = "SKU,Product_Name,sale_price,regular_price,Stock_Qty,Image,Category FROM products";
 }else{
-	$sql = "Select sku,productName,salePrice,regularPrice,stockQty,image,$category FROM products WHERE Category='$category'";
+	$sql = "SKU,Product_Name,sale_price,regular_price,Stock_Qty,Image,Category FROM products WHERE Category='$category'";
 }
 
 $res=mysqli_query($conn,$sql);
