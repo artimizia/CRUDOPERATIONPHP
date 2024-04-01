@@ -26,7 +26,6 @@ $sql = "INSERT INTO users (user_name, password, admin)VALUES ( '$username', '$pa
 $result=mysqli_query($conn,$sql);
 }catch(Exception $e){
   echo '<script>alert("exception occured")</script>'; 
-  //echo "exception occured '$result'".$e;
 }
 header("Location:home.php");
 exit();

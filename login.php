@@ -13,7 +13,7 @@ if(empty($password)){
 	header("Location:index.php?error=password is required");
 	exit();
 }
-$sql = "SELECT $user_name,$password,$admin from  users WHERE user_name='$uname' AND password='$password'";
+$sql = "SELECT user_name,password,admin from  users WHERE user_name='$uname' AND password='$password'";
 $result=mysqli_query($conn,$sql);
 if(mysqli_num_rows($result)===1){
     $row = mysqli_fetch_assoc($result);
