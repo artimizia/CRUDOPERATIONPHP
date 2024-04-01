@@ -18,7 +18,7 @@ input[type=text],[type=number],select {
 <form method="post" action="CreateProduct.php">
 <div class="container">
 <label for="sku"><b>SKU</b></label>
-<input type="text" name="sku">
+<input type="text" name="sku" required>
 <label for="productName"><b>Product Name</b></label>
 <input type="text" name="productName">
 <label for="salePrice"><b>Sale price </b></label>
