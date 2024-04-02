@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 28, 2024 at 12:54 PM
+-- Generation Time: Apr 02, 2024 at 10:33 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -28,22 +28,24 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `products` (
-  `Product_Name` varchar(100) NOT NULL,
-  `SKU` varchar(100) NOT NULL,
-  `Stock_Qty` int(100) NOT NULL,
-  `Image` varchar(100) NOT NULL,
-  `Category` varchar(100) DEFAULT NULL,
-  `regular_price` decimal(6,2) DEFAULT NULL,
-  `sale_price` decimal(6,2) DEFAULT NULL
+  `productName` varchar(100) DEFAULT NULL,
+  `sku` varchar(100) NOT NULL,
+  `stockQty` int(100) DEFAULT NULL,
+  `image` varchar(100) DEFAULT NULL,
+  `category` varchar(100) DEFAULT NULL,
+  `regularPrice` decimal(6,1) DEFAULT NULL,
+  `salePrice` decimal(6,1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`Product_Name`, `SKU`, `Stock_Qty`, `Image`, `Category`, `regular_price`, `sale_price`) VALUES
-('plant6', '12335', 5, 'https://en.wikipedia.org/wiki/File:Magnolia.jpg', 'grocery', 6.00, 34.00),
-('plant', '1233573', 5, 'https://en.wikipedia.org/wiki/File:Magnolia.jpg', 'grocery', 5.00, 6.00);
+INSERT INTO `products` (`productName`, `sku`, `stockQty`, `image`, `category`, `regularPrice`, `salePrice`) VALUES
+('plant', '1233573', 5, 'https://en.wikipedia.org/wiki/File:Magnolia.jpg', 'grocery', 3.0, 33.0),
+('plant6', '12335732', 22, 'https://en.wikipedia.org/wiki/File:Magnolia.jpg', 'misc', 4.0, 0.0),
+('plant3', '12335734', 22, 'https://en.wikipedia.org/wiki/File:Magnolia.jpg', 'grocery', 0.0, 0.0),
+('plant23', 'w', 99, 'https://en.wikipedia.org/wiki/File:Magnolia.jpg', 'grocery', 0.0, 0.0);
 
 -- --------------------------------------------------------
 
@@ -52,7 +54,7 @@ INSERT INTO `products` (`Product_Name`, `SKU`, `Stock_Qty`, `Image`, `Category`,
 --
 
 CREATE TABLE `users` (
-  `user_name` varchar(100) NOT NULL,
+  `userName` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
   `admin` int(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -61,11 +63,10 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_name`, `password`, `admin`) VALUES
+INSERT INTO `users` (`userName`, `password`, `admin`) VALUES
 ('admin', 'admin', 1),
-('admin1', 'admin1', 1),
-('admin2', 'admin2', 1),
-('user', 'user', 0);
+('admin3', 'admin3', 1),
+('user', 'user', 1);
 
 --
 -- Indexes for dumped tables
@@ -75,14 +76,14 @@ INSERT INTO `users` (`user_name`, `password`, `admin`) VALUES
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
-  ADD PRIMARY KEY (`SKU`);
+  ADD PRIMARY KEY (`sku`);
 
 --
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`user_name`),
-  ADD UNIQUE KEY `user_name` (`user_name`);
+  ADD PRIMARY KEY (`userName`),
+  ADD UNIQUE KEY `user_name` (`userName`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
