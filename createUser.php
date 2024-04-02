@@ -23,7 +23,7 @@ if(isset( $_POST['admin'])){
 
 try{
 $result="";
-$sql = "INSERT INTO users (user_name, password, admin)VALUES ( '$username', '$password', '$admin');";
+$sql = "INSERT INTO users (userName, password, admin)VALUES ( '$username', '$password', '$admin');";
 $result=mysqli_query($conn,$sql);
 }catch(Exception $e){
   echo '<script>alert("exception occured")</script>'; 
