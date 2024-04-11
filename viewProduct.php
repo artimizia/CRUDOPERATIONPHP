@@ -1,19 +1,39 @@
 <?php
-  session_start();
+  if( !isset($_SESSION) || session_id() == '' ||session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
+
+  if(!isset($_SESSION['userName']) || !isset($_SESSION['password'])){
+    header("Location:index.php");
+    exit();
+ }
   include "db_conn.php";
-  $sku = $_GET["sku"];
-  $sql = "Select sku,productName,salePrice,regularPrice,stockQty,image,category from products WHERE sku='$sku'";
-  $products=mysqli_query($conn,$sql);
-  foreach ($products as $i => $product) {
-    $sku = $product['sku'];
-    $productName = $product['productName'];
-    $salePrice = $product['salePrice'];
-    $regularPrice = $product['regularPrice'];
-    $stockQty = $product['stockQty'];
-    $image = $product['image'];
-    $category = $product['category'];
+
+  try{
+     $sku = $_GET["sku"];
+     $sql = "SELECT sku,productName,salePrice,regularPrice,stockQty,image,category from products WHERE sku='$sku'";
+    $products=mysqli_query($conn,$sql);
+    if(mysqli_num_rows($products)==0){
+      throw new Exception("Product does not exist");
+    }
+    foreach ($products as $i => $product) {
+      $sku = $product['sku'];
+      $productName = $product['productName'];
+      $salePrice = $product['salePrice'];
+      $regularPrice = $product['regularPrice'];
+      $stockQty = $product['stockQty'];
+      $image = $product['image'];
+      $category = $product['category'];
+    }
+
+  }catch(Exception $e){
+      echo '<script>
+      alert("Error occured");
+      window.location.href="home.php";
+      </script>'; 
 
   }
+  
 ?>
 <style>
 body {font-family: Arial, Helvetica, sans-serif;}
@@ -27,8 +47,7 @@ input[type=text] {
 }
 </style>
 
-<?php if(isset($_SESSION['userName']) && isset($_SESSION['password'])){?>
-<form  action="home.php">
+<form  action="home.php" method="post">
 <div class="container">
 <label for="sku"><b>SKU</b></label>
 <input type="text" value="<?PHP echo $sku; ?>" name="sku"readonly>
@@ -44,7 +63,6 @@ input[type=text] {
 <input type="text" value="<?PHP echo $image; ?>" name="image" readonly>
 <label for="stockQty"><b>QTY </b></label>
 <input type="text" value="<?PHP echo $stockQty; ?>" name="stockQty" readonly>
-<input type="submit" >
+<input type="submit" value="Done">
 </div>
 </form>
-<?php } ?>

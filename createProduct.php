@@ -1,25 +1,35 @@
 <?php
-  session_start();
   include "db_conn.php";
-  $sku=   $_POST['sku'];
-  $productName=   $_POST['productName'];
+  include "validations.php";
+  include "uploadFile.php";
+  echo "createProduct";
+  $sku= validateInput($_POST['sku']);
+  $productName=  validateInput($_POST['productName']);
   $salePrice=   $_POST['salePrice'];
   $regularPrice=   $_POST['regularPrice'];
   $category=   $_POST['category'];
-  $image=   $_POST['image'];
+  $image=   "";
   $stockQty=   $_POST['stockQty'];
-  try{
+   try{
+    $fileName = uploadFile($_FILES['uploadedFile']);
     if(empty($sku)){
      throw new Exception("sku is empty");
   }
-    $sql = "INSERT INTO products (productName,sku,salePrice,regularPrice,stockQty,image,category)VALUES ( '$productName','$sku',$salePrice,$regularPrice,'$stockQty','$image','$category');";
+  if($fileName){
+    $image =$fileName;
+  }
+  $sql = "INSERT INTO products (productName,sku,salePrice,regularPrice,stockQty,image,category)VALUES ( '$productName','$sku',$salePrice,$regularPrice,'$stockQty','$image','$category');";
     $result=mysqli_query($conn,$sql);
-    print_r($result);
+    echo($result);
+    header("Location:home.php");
+    exit();
 
   }catch(Exception $e){
-    print_r($e);
+    echo $e;
+    echo '<script>
+    alert("Error occured");
+    window.location.href="addProduct.php";
+    </script>'; 
   }
 
-header("Location:home.php");
-exit();
 ?>

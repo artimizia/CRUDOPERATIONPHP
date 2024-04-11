@@ -1,7 +1,16 @@
 <?php
-  session_start();
   include "db_conn.php";
-  $sku=   $_POST['sku'];
-  $sql = "DELETE FROM products WHERE sku='$sku';";
-  $result=mysqli_query($conn,$sql);
+  try{
+    $sku=  $_POST['sku'];
+    $sql = "DELETE FROM products WHERE sku='$sku';";
+    $result=mysqli_query($conn,$sql);
+    echo json_encode($result);
+  }catch(Exception $e){
+     echo json_encode(array(
+        'error' => array(
+           "Error occured during delete"
+        ),
+    ));
+  }
+
 ?>

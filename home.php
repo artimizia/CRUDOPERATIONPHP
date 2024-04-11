@@ -1,42 +1,47 @@
 
 <?php
-session_start();
+if( !isset($_SESSION) || session_id() == '' ||session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 include "db_conn.php";
-$stmt = "SELECT * from  products";
-$usrstmt = "SELECT * from  users";
-$products=mysqli_query($conn,$stmt);
-$users=mysqli_query($conn,$usrstmt);?>
+include "validations.php";
+include "dbController.php";
+if(!isset($_SESSION['userName']) || !isset($_SESSION['password'])){
+    header("Location:index.php");
+    exit();
+}
+try{
+    $categories=fetchCategories($conn);
+    $products=fetchAllProducts($conn);
+    if($_SESSION['admin']==1){
+        $users=fetchAllUsers($conn);
+    }
+
+}catch(Exception $e){
+   echo '<script>
+      alert("Error occured");</script>'; 
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
 
-// // function filterTable(filterValue) {
-//   console.log("filter value"+filterValue);
-//   table = document.getElementById("productTable");
-//   tr = table.getElementsByTagName("tr");
-//   for (i = 1; i < tr.length; i++) {
-//     td = tr[i].getElementsByTagName("td")[4];
-//     if (td) {
-//       txtValue = td.textContent || td.innerText;
-//       console.log("txtValue"+txtValue);
-//       if(filterValue.toUpperCase()==="ALL"){
-//         tr[i].style.display = "";
-//       }
-//       else if (txtValue.toUpperCase()===filterValue.toUpperCase()) {
-//         tr[i].style.display = "";
-//       } else {
-//         tr[i].style.display = "none";
-//       }
-//     }
-//   }
-// }
 function confirmationBox(sku) {
+  console.log("comes in confirmation box");
   if (confirm('delete?')) {
-  deleteProduct(sku);
+    deleteProduct(sku);
   } 
 }
+
+var escapeHtml = function (html) {
+    var txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    return txt.value;
+};
 
 function filterTable(filterValue){
        $.ajax({
@@ -54,32 +59,32 @@ function filterTable(filterValue){
                      var imageCell = document.createElement("td"); 
                      var productName = result[item].productName;
                      var image = result[item].image;
-                     console.log("test"+result[item].productName);
                      var img = document.createElement("img"); 
                      img.alt= productName;
-
-                     img.src =image;
+                     img.src ='images/'+image;
+                     img.style ="width:55px;height:56px;"
                     var sku = result[item].sku;
                     imageCell.appendChild(img);
-                    imageCell.onclick=function(){ updateProduct(sku); } ;
+                    imageCell.onclick=function(){ addProduct(sku); } ;
                     row.appendChild(imageCell); 
                     var nameCell = document.createElement("td"); 
                     nameCell.textContent = result[item].productName; 
-                    nameCell.onclick=function(){ updateProduct(sku); } ;
+                    nameCell.onclick=function(){ addProduct(sku,"update"); } ;
 
                     row.appendChild(nameCell); 
                     var priceCell = document.createElement("td"); 
                     priceCell.textContent = result[item].salePrice >0? result[item].salePrice:result[item].regularPrice;
-                    priceCell.onclick=function(){ updateProduct(sku); } ;
+                    priceCell.onclick=function(){ addProduct(sku,"update"); } ;
                     row.appendChild(priceCell); 
                     var skuCell = document.createElement("td"); 
-                    skuCell.textContent = result[item].sku; 
-                    skuCell.onclick=function(){ updateProduct(sku); } ;
+                    console.log("skucell"+escapeHtml(result[item].sku));
+                    skuCell.textContent = escapeHtml(result[item].sku); 
+                    skuCell.onclick=function(){ addProduct(sku,"update"); } ;
                     row.appendChild(skuCell); 
 
                     var categoryCell = document.createElement("td"); 
                     categoryCell.textContent = result[item].category;
-                    categoryCell.onclick=function(){ updateProduct(sku);} ;
+                    categoryCell.onclick=function(){ addProduct(sku,"update");} ;
                     row.appendChild(categoryCell); 
                     var actionCell = document.createElement("td"); 
                     var viewProductButton = document.createElement('input');
@@ -89,11 +94,10 @@ function filterTable(filterValue){
                     actionCell.appendChild(viewProductButton);
                     var admin = '<?php echo $_SESSION['admin']?>';
                     if(admin == 1){
-                        console.log("comes in admin");
                         var updateProductButton = document.createElement('input');
                         updateProductButton.type = "button";
                         updateProductButton.value="update";
-                        updateProductButton.onclick = function() {updateProduct(sku);}
+                        updateProductButton.onclick = function() {addProduct(sku,"update");}
                         actionCell.appendChild(updateProductButton);
                         var btn = document.createElement('input');
                         btn.type = "button";
@@ -108,52 +112,78 @@ function filterTable(filterValue){
              }
             },
             error:function(result){
+                console.log("exception");
                 $("#productTable tbody tr").remove(); 
                      console.log("filter failure"+JSON.stringify(result));
             }
         });
    }
 
-function updateProduct(sku){
-	window.location.href="updateProduct.php?sku="+sku;
+
+function addProduct(sku,type){
+    console.log("add product");
+    window.location.href="addProduct.php?type="+type+"&sku="+encodeURIComponent(sku);
+}
+
+function addUser(userName,type){
+    console.log("add user");
+    window.location.href="addUser.php?type="+type+"&username="+encodeURIComponent(userName);
 }
 
 function viewProduct(sku){
-    window.location.href="viewProduct.php?sku="+sku;
+    window.location.href="viewProduct.php?sku="+encodeURIComponent(sku);
 }
 
 function deleteProduct(sku){
 	     $.ajax({
-            url:"deleteProducts.php",    
-            type: "post",    
+            url:"deleteProducts.php", 
+            dataType: 'json',   
+            type: "post",      
             data: ({sku: sku}),
             timeout:5000,
             success:function(result){
+                if(result["error"]){
+                  alert("Error occured");
+                }
                window.location.reload();
             },
             error:function(result){
-             window.location.reload();
+                 alert("error occured");
+                 window.location.reload();
             }
         });
+}
+
+function confirmationUserDelete(username) {
+  if (confirm('delete user?')) {
+     deleteUser(username);
+  } 
 }
 
 function deleteUser(username){
 	    $.ajax({
             url:"deleteUser.php",    
             type: "post",
+            dataType:'json',
             data: ({userName: username}),
             timeout:5000,
             success:function(result){
+                console.log("success");
+                if(result["error"]){
+                  alert("Error occured");
+                }
                 window.location.reload();
             },
             error:function(result){
+                 console.log("result is"+result);
+                 alert(result);
                  window.location.reload();
             }
         });
 }
 
-</script>
 
+</script>
 <title>Home</title>
 <style type="text/css">
 	.flex 
@@ -174,13 +204,12 @@ function deleteUser(username){
     }
 </style>
 </head>
-<?php if(isset($_SESSION['userName']) && isset($_SESSION['password'])){?>
 <body>
-<div class="flex header">	<h1>Hello, <?php echo $_SESSION['userName'];?></h1>
+<div class="flex header"><h1>Hello, <?php echo $_SESSION['userName'];?></h1>
 	<a href="logout.php">Logout</a></div>
 	<?php if($_SESSION['admin']==1){?>
 	<p>
-     <a href="addUser.php" type="button" class="btn btn-sm btn-success">Add New User</a>
+     <button onclick="addUser('','add')">Add New user</button>
     </p>
 		<table class="table">
     <thead>
@@ -196,11 +225,11 @@ function deleteUser(username){
         <tr>
             <th scope="row"><?php echo $i + 1 ?></th>
             <td><?php echo $user['userName'] ?></td>
-            <td><?php echo  crypt($user['password'] , 'st')?></td>
+            <td><?php echo  $user['password'] ?></td>
             <td>
             	
-                <a href="editUser.php?userName=<?php echo $user['userName'] ?>" >Edit</a>
-                <button onclick="deleteUser('<?php echo $user['userName'];?>')">Delete</button>
+               <button onclick="addUser('<?php echo validateInput($user['userName']);?>','edit')">edit </button>
+                <button onclick="confirmationUserDelete('<?php echo validateInput($user['userName']);?>')">Delete</button>
                 
             </td>
         </tr>
@@ -211,15 +240,17 @@ function deleteUser(username){
 <br/>
 <br/>
 </br/>
-<?php if($_SESSION['admin']==1){?>
-    <a href="addProduct.php" type="button" class="btn btn-sm btn-success">Add New Product</a>
+<?php {?>
+    <button onclick="addProduct('','add')">Add New Product</button>
 <?php } ?>
     <label for="category">Choose a category:</label>
     <select name="category" id="category" onchange="filterTable(this.value)">
+    <?php foreach ($categories as $row){ ?>
+      <option value="<?= $row['categoryName'] ?>">
+        <?= $row['categoryName']?>
+      </option>
+      <?php  } ?>
     <option value="all">all</option>
-    <option value="grocery">grocery</option>
-    <option value="toiletries">toiletries</option>
-    <option value="misc">misc</option>
    </select>
    <br/>
    <br/>
@@ -239,19 +270,19 @@ function deleteUser(username){
     <?php foreach ($products as $i => $product) { ?>
         <tr  >
             <td>
-                <?php if ($product['image']): ?>
-                    <img src="/<?php echo $product['image'] ?>" alt="<?php echo $product['productName'] ?>" >
-                <?php endif; ?>
+
+             <img src=<?php echo 'images/'.$product['image'];?>  style="width:55px;height:56px;"> 
+               
             </td>
-            <td onclick="updateProduct('<?php echo $product['sku'];?>')"><?php echo $product['productName'] ?></td>
-            <td onclick="updateProduct('<?php echo $product['sku'];?>')"><?php echo $product['salePrice'] >0 ?$product['salePrice']:$product['regularPrice']?></td>
-            <td onclick="updateProduct('<?php echo $product['sku'];?>')"><?php echo $product['sku'] ?></td>
-            <td onclick="updateProduct('<?php echo $product['sku'];?>')"><?php echo $product['category'] ?></td>
+            <td onclick="addProduct('<?php echo validateInput($product['sku']);?>','update')"><?php echo $product['productName'] ?></td>
+            <td onclick="addProduct('<?php echo validateInput($product['sku']);?>','update')"><?php echo $product['salePrice'] >0 ?$product['salePrice']:$product['regularPrice']?></td>
+            <td onclick="addProduct('<?php echo validateInput($product['sku']);?>','update')"><?php echo $product['sku'];?></td>
+            <td onclick="addProduct('<?php echo validateInput($product['sku']);?>','update')"><?php echo $product['category'] ?></td>
             <td>
-            	<button onclick="viewProduct('<?php echo $product['sku'];?>')">View</button>
+            	<button onclick="viewProduct('<?php echo validateInput($product['sku']);?>')">View</button>
             	<?php if($_SESSION['admin']==1){?>
-                <button onclick="updateProduct('<?php echo $product['sku'];?>')">Update</button>
-                <button onclick="confirmationBox('<?php echo $product['sku'];?>')">Delete</button>
+                <button onclick="addProduct('<?php echo validateInput($product['sku']);?>','update')">Update</button>
+                <button onclick="confirmationBox('<?php echo validateInput($product['sku']);?>')">Delete</button>
                 <?php } ?>
             </td>
         </tr>
@@ -259,6 +290,5 @@ function deleteUser(username){
     </tbody>
 </table>
 </body>
-<?php } ?>
 </html>
 

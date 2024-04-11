@@ -1,10 +1,24 @@
 
 <?php
-  session_start();
-  include "db_conn.php";
+  if( !isset($_SESSION) || session_id() == '' ||session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
+
+  if(!isset($_SESSION['userName']) || !isset($_SESSION['password'])){
+    header("Location:index.php");
+    exit();
+}
+if(!isset($_SESSION['admin']) ||$_SESSION['admin']==0){
+    header("Location:home.php");
+    exit();
+}
+ include "db_conn.php";
+ include "validations.php";
+ include "dbController.php";
   $sku=   $_GET['sku'];
-  $sql = "Select sku,productName,salePrice,regularPrice,stockQty,image,category FROM products WHERE sku='$sku'";
-  $products=mysqli_query($conn,$sql);
+  try{
+   $products=fetchProduct($conn,$sku);
+   $categories=fetchCategories($conn);
   foreach ($products as $i => $product) {
     $sku = $product['sku'];
     $productName = $product['productName'];
@@ -14,12 +28,23 @@
     $image = $product['image'];
     $category = $product['category'];
   }
+     
+
+  }catch(Exception $e){
+    echo '<script>
+      alert("Error occured");
+      window.location.href="home.php";
+      </script>'; 
+  }  
 
 ?>
 <style>
 body {font-family: Arial, Helvetica, sans-serif;}
 
-
+.imageText b{
+  font-weight: normal !important;;
+  font-size: small;
+}
 input[type=text], input[type=number] ,select  {
   width: 100%;
   padding: 12px 20px;
@@ -30,8 +55,8 @@ input[type=text], input[type=number] ,select  {
 }
 
 </style>
-<?php if(isset($_SESSION['userName']) && isset($_SESSION['password'])){?>
-<form  method="POST" action="updateInsertProduct.php">
+<?php if(mysqli_num_rows($products)>0){?>
+<form  method="POST" action="updateInsertProduct.php" enctype="multipart/form-data">
 <div class="container">
 <label for="sku"><b>SKU</b></label>
 <input type="text" value="<?PHP echo $sku; ?>" name="sku"readonly>
@@ -43,13 +68,17 @@ input[type=text], input[type=number] ,select  {
 <input type="number" value="<?PHP echo $regularPrice; ?>" name="regularPrice" >
 <label for="category"><b>category </b></label>
 <select name="category" id="categoryField">
-<option value="grocery">grocery</option>
-<option value="toiletries">toiletries</option>
-<option value="misc">misc</option>
+<?php foreach ($categories as $row){ ?>
+      <option value="<?= $row['categoryName'] ?>">
+        <?= $row['categoryName'] ?>
+      </option>
+<?php  } ?>
 </select>
-<!-- <input type="text" value="<?PHP echo $category; ?>" name="category" > -->
 <label for="image"><b>Image </b></label>
-<input type="text" value="<?PHP echo $image; ?>" name="image" >
+<input type="file" name="uploadedFile" id="uploadedFile">
+<input type="input" name="image" value="<?PHP echo $image; ?>"name="image">
+</br>
+</br>
 <label for="stockQty"><b>QTY </b></label>
 <input type="number" value="<?PHP echo $stockQty; ?>" name="stockQty" > 
 <input type="submit" >

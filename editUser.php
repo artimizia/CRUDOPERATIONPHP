@@ -1,15 +1,35 @@
 <?php
-  session_start();
   include "db_conn.php";
-  $username=   $_GET['userName'];
-  $sql = "Select userName,password,admin FROM users WHERE userName='$username'";
-  $users=mysqli_query($conn,$sql);
+  include "dbController.php";
+  if( !isset($_SESSION) || session_id() == '' ||session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
+
+  if(!isset($_SESSION['userName']) || !isset($_SESSION['password'])){
+    header("Location:index.php");
+    exit();
+}
+  if(!isset($_SESSION['admin']) ||$_SESSION['admin']==0){
+    header("Location:home.php");
+    exit();
+  }
+  $username = $_GET['userName'];
+  try{
+    $users=fetchUser($conn,$username);
   foreach ($users as $i => $user) {
     $userName = $user['userName'];
     $password = $user['password'];
     $admin = $user['admin'];
-
   }
+
+  
+  }catch(Exception $e){
+    echo '<script>
+      alert("Error occured");
+      window.location.href="home.php";
+      </script>'; 
+  }
+
 ?>
 
 <style>
@@ -24,16 +44,19 @@ input[type=text], input[type=password] {
 }
 </style>
 
-<?php if(isset($_SESSION['userName']) && isset($_SESSION['password'])){?>
+
 <form method="post" action="updateUser.php">
 <div class="container">
 <label for="username"><b>Username</b></label>
 <input type="text" value="<?PHP echo $username; ?>" name="username" readonly>
 <label for="password"><b>Password</b></label>
-<input type="password" value="<?PHP echo $password; ?>" name="password">
-<label for="admin"><b>is it an Admin? </b></label>
-<input type="checkbox" name="admin" value="<?PHP echo $admin;?>" <?php if ( $admin==1 ) echo 'checked'; ?>>
+<input type="password" value="<?PHP echo $password; ?>" name="password" required>
+<label for="userRole"><b>Choose User Role</b></label>
+<select name=userRole>
+<option value="1" <?php if($admin==1) echo "selected=\"selected\""; ?>>Admin</option>
+<option value="0" <?php if($admin==0) echo "selected=\"selected\""; ?>>Store Manager</option>
+</select>
 <input type="submit" >
 </div>
 </form>
-<?php } ?>
+

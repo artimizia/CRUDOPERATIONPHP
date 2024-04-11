@@ -1,6 +1,49 @@
 <?php
-  session_start();
+  if( !isset($_SESSION) || session_id() == '' ||session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
+
+  if(!isset($_SESSION['userName']) || !isset($_SESSION['password'])){
+    header("Location:index.php");
+    exit();
+  }
+  if(!isset($_SESSION['admin']) ||$_SESSION['admin']==0){
+    header("Location:home.php");
+    exit();
+  }
   include "db_conn.php";
+  include "dbController.php";
+  $userName=$password="";
+  $admin=0;
+  $type = $_GET['type'];
+  $username = $_GET['username'];
+
+  try{
+    if(!isAddUser()){
+      $users=fetchUser($conn,$username);
+      foreach ($users as $i => $user) {
+        $userName = $user['userName'];
+        $password = $user['password'];
+        $admin = $user['admin'];
+      }
+      
+      
+    echo $userName;
+    }
+  
+
+  
+  }catch(Exception $e){
+    echo '<script>
+      alert("Error occured");
+      window.location.href="home.php";
+      </script>'; 
+  }
+  function isAddUser(){
+    global $type;
+    return $type=="add";
+
+  }
 ?>
 
 <style>
@@ -15,16 +58,23 @@ input[type=text], input[type=password] {
 }
 </style>
 
-<?php if(isset($_SESSION['userName']) && isset($_SESSION['password'])){?>
-<form method="post" action="CreateUser.php">
+  <?php if(isAddUser()){ ?>
+<form method="post"  action="createUser.php">
+<?php }?>
+<?php if(!isAddUser()){ ?>
+<form method="post"  action="updateUser.php">
+<?php }?>
 <div class="container">
 <label for="username"><b>Username</b></label>
-<input type="text" name="username" required>
+<input type="text" name="username" required value=<?php echo $username ?> >
 <label for="password"><b>Password</b></label>
-<input type="text" name="password" required>
-<label for="admin"><b>is it an Admin? </b></label>
-<input type="checkbox" name="admin" value="1">
+<input type="password" name="password" required value=<?php echo $password ?>>
+<label for="userRole">Choose a User Role:</label>
+<select id="userRole" name="userRole">
+  <option value="0" <?php if($admin==0) echo "selected=\"selected\""; ?>>Store Manager</option>
+  <option value="1" <?php if($admin==1) echo "selected=\"selected\""; ?>>Admin</option>
+</select>
 <input type="submit" >
 </div>
 </form>
-<?php } ?>
+
