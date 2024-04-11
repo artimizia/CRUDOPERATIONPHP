@@ -66,7 +66,7 @@ function populateProductTable(products){
                       } ;
                     var nameCell = document.createElement("td"); 
                     nameCell.id=sku;
-                    nameCell.textContent = products[item].productName; 
+                    nameCell.textContent = escapeHtml(products[item].productName); 
                     nameCell.onclick=function(){ addProduct($(this).attr('id'),"update"); } ;
 
                     row.appendChild(nameCell); 
@@ -139,7 +139,6 @@ function populateUserTable(users){
                     editButton.onclick = function() {
                     addUser($(this).attr('id'),"edit");};
                     actionCell.appendChild(editButton);
-                    var admin = '<?php echo $_SESSION['admin']?>';
                     var deleteUserButton = document.createElement('input');
                         deleteUserButton.type = "button";
                         deleteUserButton.value="delete";
@@ -290,8 +289,12 @@ $(document).ready(function(){
 	justify-content: space-between;
     align-items: center;
     }
-    .productTable{
+    .productTable {
     	 width: 100%;
+         background: #f9f9f9;
+    }
+    .userTable{
+         width: 100%;
          background: #f9f9f9;
     }
     tr:nth-child(odd) {
@@ -306,7 +309,7 @@ $(document).ready(function(){
 	<p>
      <button id="addNewUser" >Add New user</button>
     </p>
-		<table id="userTable" class="table">
+		<table id="userTable" class="userTable">
     <thead>
     <tr>
         <th scope="col">UserName</th>

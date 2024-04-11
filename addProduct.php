@@ -12,7 +12,7 @@
   include "validations.php"; 
   include "dbController.php";
   $functionType = $_GET['type'];
-  $sku = $productName = $image='';
+  $sku = $productName = $image=$category='';
   $regularPrice = $salePrice =$stockQty=0;
   try{
     $categories=fetchCategories($conn);
@@ -78,8 +78,8 @@ input[type=text],[type=number],select {
 <input type="number" name="regularPrice" value=<?php echo $regularPrice;?> >
 <label for="category"><b>category </b></label>
 <select name="category" id="categoryField">
-<?php foreach ($categories as $row){ ?>
-      <option value="<?= $row['categoryName'] ?>">
+<?php foreach ($categories as $row){ ?> 
+      <option  <?php if($row['categoryName']==$category) echo "selected=\"selected\""; ?> value="<?= $row['categoryName'] ?>">
         <?= $row['categoryName']?>
       </option>
       <?php  } ?>
