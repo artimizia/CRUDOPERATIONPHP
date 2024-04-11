@@ -17,6 +17,7 @@ if(!isset($_SESSION['admin']) ||$_SESSION['admin']==0){
  include "dbController.php";
   $sku=   $_GET['sku'];
   try{
+    echo "comes to update product";
    $products=fetchProduct($conn,$sku);
    $categories=fetchCategories($conn);
   foreach ($products as $i => $product) {
@@ -59,7 +60,7 @@ input[type=text], input[type=number] ,select  {
 <form  method="POST" action="updateInsertProduct.php" enctype="multipart/form-data">
 <div class="container">
 <label for="sku"><b>SKU</b></label>
-<input type="text" value="<?PHP echo $sku; ?>" name="sku"readonly>
+<input type="text" value="<?PHP echo htmlspecialchars($sku); ?>" name="sku"readonly>
 <label for="productName"><b>Product Name</b></label>
 <input type="text" value="<?PHP echo $productName; ?>"name="productName">
 <label for="salePrice"><b>sale price </b></label>

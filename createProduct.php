@@ -25,7 +25,7 @@
     exit();
 
   }catch(Exception $e){
-    echo $e;
+      echo $e;
     echo '<script>
     alert("Error occured");
     window.location.href="addProduct.php";

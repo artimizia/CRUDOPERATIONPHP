@@ -66,7 +66,7 @@ input[type=text], input[type=password] {
 <?php }?>
 <div class="container">
 <label for="username"><b>Username</b></label>
-<input type="text" name="username" required value=<?php echo $username ?> >
+<input type="text" value="<?PHP echo $username; ?>" name="username" required>
 <label for="password"><b>Password</b></label>
 <input type="password" name="password" required value=<?php echo $password ?>>
 <label for="userRole">Choose a User Role:</label>

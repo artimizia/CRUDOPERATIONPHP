@@ -17,8 +17,7 @@
   try{
     $categories=fetchCategories($conn);
     if($functionType =="update"){
-      $sku= $_GET['sku'];
-     
+      $sku=$_GET['sku'];
        $products=fetchProduct($conn,$sku);
        if(mysqli_num_rows($products)==0){
         throw new Exception();
@@ -58,8 +57,8 @@ input[type=text],[type=number],select {
   border: 1px solid #ccc;
   box-sizing: border-box;
 }
-
 </style>
+
 <?php if(isFunctionAdd()){ ?>
 <form method="post"  enctype="multipart/form-data" action="createProduct.php">
 <?php }?>
@@ -68,7 +67,7 @@ input[type=text],[type=number],select {
 <?php }?>
 <div class="container">
 <label for="sku"><b>SKU</b></label>
-<input type="text" name="sku" required value=<?php echo $sku;?> >
+<input type="text" value="<?PHP echo $sku; ?>" name="sku">
 <label for="productName"><b>Product Name</b></label>
 <input type="text" name="productName" value=<?php echo $productName;?> >
 <label for="salePrice"><b>Sale price </b></label>

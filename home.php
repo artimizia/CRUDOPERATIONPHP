@@ -119,6 +119,10 @@ function filterTable(filterValue){
         });
    }
 
+function updateProduct(sku){
+    console.log("comes to updatye");
+    window.location.href="updateProduct.php?sku="+encodeURIComponent(sku);
+}
 
 function addProduct(sku,type){
     console.log("add product");
@@ -181,6 +185,7 @@ function deleteUser(username){
             }
         });
 }
+
 
 
 </script>
@@ -281,7 +286,8 @@ function deleteUser(username){
             <td>
             	<button onclick="viewProduct('<?php echo validateInput($product['sku']);?>')">View</button>
             	<?php if($_SESSION['admin']==1){?>
-                <button onclick="addProduct('<?php echo validateInput($product['sku']);?>','update')">Update</button>
+                   <button onclick="addProduct('<?php echo validateInput($product['sku']);?>','update')">Update</button>
+            
                 <button onclick="confirmationBox('<?php echo validateInput($product['sku']);?>')">Delete</button>
                 <?php } ?>
             </td>
