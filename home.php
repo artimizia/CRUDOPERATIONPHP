@@ -12,10 +12,6 @@ if(!isset($_SESSION['userName']) || !isset($_SESSION['password'])){
 }
 try{
     $categories=fetchCategories($conn);
-    $products=fetchAllProducts($conn);
-    if($_SESSION['admin']==1){
-        $users=fetchAllUsers($conn);
-    }
 
 }catch(Exception $e){
    echo '<script>
@@ -43,6 +39,142 @@ var escapeHtml = function (html) {
     return txt.value;
 };
 
+
+function populateProductTable(products){
+         tableBody = document.getElementById("tableBody");
+             if(Object.keys(products).length> 0){
+                for(var item in products) {
+                     var row = document.createElement("tr"); 
+                     var imageCell = document.createElement("td"); 
+                     var productName = products[item].productName;
+                     var image = products[item].image;
+                     var img = document.createElement("img"); 
+                     img.alt= productName;
+                     img.src ='images/'+image;
+                     img.style ="width:55px;height:56px;"
+                    var sku = products[item].sku;
+                    imageCell.value=sku;
+                    imageCell.id=sku;
+                    imageCell.appendChild(img);
+
+       
+                    row.appendChild(imageCell); 
+                    imageCell.onclick=function(currentRow){
+
+                     console.log( $(this).attr('id'));
+                     addProduct($(this).attr('id'),"update");
+                      } ;
+                    var nameCell = document.createElement("td"); 
+                    nameCell.id=sku;
+                    nameCell.textContent = products[item].productName; 
+                    nameCell.onclick=function(){ addProduct($(this).attr('id'),"update"); } ;
+
+                    row.appendChild(nameCell); 
+                    var priceCell = document.createElement("td"); 
+                    priceCell.textContent = products[item].salePrice >0? products[item].salePrice:products[item].regularPrice;
+                    priceCell.id=sku;
+                    priceCell.onclick=function(){ addProduct($(this).attr('id'),"update"); } ;
+                    row.appendChild(priceCell); 
+                    var skuCell = document.createElement("td"); 
+                
+                    skuCell.textContent = escapeHtml(products[item].sku); 
+                    skuCell.id=sku;
+                    skuCell.onclick=function(){ addProduct($(this).attr('id'),"update"); } ;
+                    row.appendChild(skuCell); 
+
+                    var categoryCell = document.createElement("td"); 
+                    categoryCell.id=sku;
+                    categoryCell.textContent = products[item].category;
+                    categoryCell.onclick=function(){ addProduct($(this).attr('id'),"update");} ;
+                    row.appendChild(categoryCell); 
+                    var actionCell = document.createElement("td"); 
+                    var viewProductButton = document.createElement('input');
+                    viewProductButton.type = "button";
+                    viewProductButton.value="view";
+                    viewProductButton.id=sku;
+                    viewProductButton.onclick = function() {
+                    viewProduct($(this).attr('id'));};
+                    actionCell.appendChild(viewProductButton);
+                    var admin = '<?php echo $_SESSION['admin']?>';
+                    if(admin == 1){
+                        var updateProductButton = document.createElement('input');
+                        updateProductButton.type = "button";
+                        updateProductButton.value="update";
+                        updateProductButton.id=sku;
+                        updateProductButton.onclick = function() {
+                            addProduct($(this).attr('id'),"update");
+                        }
+                        actionCell.appendChild(updateProductButton);
+                        var btn = document.createElement('input');
+                        btn.type = "button";
+                        btn.value = "delete";
+                        btn.id=sku;
+                        btn.onclick = function() {confirmationBox($(this).attr('id'));};
+                        actionCell.appendChild(btn);
+                    }
+                    row.appendChild(actionCell);
+                    tableBody.appendChild(row); 
+                }
+              
+             }
+
+}
+function populateUserTable(users){
+      tableBody = document.getElementById("userBody");
+      console.log(Object.keys(users).length);
+
+             if(Object.keys(users).length> 0){
+                console.log("comes inside users"+users);
+                for(var user in users) {
+                     var row = document.createElement("tr"); 
+                     var userCell = document.createElement("td"); 
+                     userCell.id=users[user].userName;
+                     userCell.textContent = escapeHtml(users[user].userName); 
+                     row.appendChild(userCell); 
+                     var actionCell = document.createElement("td"); 
+                    var editButton = document.createElement('input');
+                    editButton.type = "button";
+                    editButton.value="edit";
+                    editButton.id=users[user].userName;
+                    editButton.onclick = function() {
+                    addUser($(this).attr('id'),"edit");};
+                    actionCell.appendChild(editButton);
+                    var admin = '<?php echo $_SESSION['admin']?>';
+                    var deleteUserButton = document.createElement('input');
+                        deleteUserButton.type = "button";
+                        deleteUserButton.value="delete";
+                        deleteUserButton.id=users[user].userName;
+                        deleteUserButton.onclick = function() {
+                            confirmationUserDelete($(this).attr('id'));
+                        }
+                        actionCell.appendChild(deleteUserButton);
+
+                    row.appendChild(actionCell);
+                    tableBody.appendChild(row); 
+                }
+              
+             }
+}
+
+function populateUsers(filterValue){
+       $.ajax({
+            url:"fetchUsers.php",    
+            type: "post",
+            dataType: "json",    
+            data: {},
+            timeout:5000,
+            success:function(result){
+                console.log("success"+JSON.stringify(result));
+                 $("#userTable tbody tr").remove(); 
+                  populateUserTable(result);
+           
+            },
+            error:function(result){
+                console.log("exception"+JSON.stringify(result));
+                  $("#userTable tbody tr").remove(); 
+            }
+        });
+   }
 function filterTable(filterValue){
        $.ajax({
             url:"filterValue.php",    
@@ -52,64 +184,8 @@ function filterTable(filterValue){
             timeout:5000,
             success:function(result){
                 $("#productTable tbody tr").remove(); 
-                tableBody = document.getElementById("tableBody");
-             if(Object.keys(result).length> 0){
-                for(var item in result) {
-                     var row = document.createElement("tr"); 
-                     var imageCell = document.createElement("td"); 
-                     var productName = result[item].productName;
-                     var image = result[item].image;
-                     var img = document.createElement("img"); 
-                     img.alt= productName;
-                     img.src ='images/'+image;
-                     img.style ="width:55px;height:56px;"
-                    var sku = result[item].sku;
-                    imageCell.appendChild(img);
-                    imageCell.onclick=function(){ addProduct(sku); } ;
-                    row.appendChild(imageCell); 
-                    var nameCell = document.createElement("td"); 
-                    nameCell.textContent = result[item].productName; 
-                    nameCell.onclick=function(){ addProduct(sku,"update"); } ;
-
-                    row.appendChild(nameCell); 
-                    var priceCell = document.createElement("td"); 
-                    priceCell.textContent = result[item].salePrice >0? result[item].salePrice:result[item].regularPrice;
-                    priceCell.onclick=function(){ addProduct(sku,"update"); } ;
-                    row.appendChild(priceCell); 
-                    var skuCell = document.createElement("td"); 
-                    console.log("skucell"+escapeHtml(result[item].sku));
-                    skuCell.textContent = escapeHtml(result[item].sku); 
-                    skuCell.onclick=function(){ addProduct(sku,"update"); } ;
-                    row.appendChild(skuCell); 
-
-                    var categoryCell = document.createElement("td"); 
-                    categoryCell.textContent = result[item].category;
-                    categoryCell.onclick=function(){ addProduct(sku,"update");} ;
-                    row.appendChild(categoryCell); 
-                    var actionCell = document.createElement("td"); 
-                    var viewProductButton = document.createElement('input');
-                    viewProductButton.type = "button";
-                    viewProductButton.value="view";
-                    viewProductButton.onclick = function() {viewProduct(sku);};
-                    actionCell.appendChild(viewProductButton);
-                    var admin = '<?php echo $_SESSION['admin']?>';
-                    if(admin == 1){
-                        var updateProductButton = document.createElement('input');
-                        updateProductButton.type = "button";
-                        updateProductButton.value="update";
-                        updateProductButton.onclick = function() {addProduct(sku,"update");}
-                        actionCell.appendChild(updateProductButton);
-                        var btn = document.createElement('input');
-                        btn.type = "button";
-                        btn.value = "delete";
-                        btn.onclick = function() {confirmationBox(sku);};
-                        actionCell.appendChild(btn);
-                    }
-                    row.appendChild(actionCell);
-                    tableBody.appendChild(row); 
-                }
-              
-             }
+                populateProductTable(result);
+           
             },
             error:function(result){
                 console.log("exception");
@@ -125,7 +201,7 @@ function updateProduct(sku){
 }
 
 function addProduct(sku,type){
-    console.log("add product");
+    console.log("sku is "+sku);
     window.location.href="addProduct.php?type="+type+"&sku="+encodeURIComponent(sku);
 }
 
@@ -185,7 +261,21 @@ function deleteUser(username){
             }
         });
 }
-
+$(document).ready(function(){
+    $('#addNewUser').on('click',function() {
+       addUser('','add');
+    });
+    $('#addNewProduct').on('click',function(){
+        addProduct('','add');
+    })
+    $('#editUser').on('click',function(){
+        console.log($(this).attr('value'));
+          //addUser($(this).attr('value'),'edit')"
+    })
+ 
+    filterTable("all");
+    populateUsers();
+});
 
 
 </script>
@@ -200,7 +290,7 @@ function deleteUser(username){
 	justify-content: space-between;
     align-items: center;
     }
-    .table{
+    .productTable{
     	 width: 100%;
          background: #f9f9f9;
     }
@@ -214,31 +304,17 @@ function deleteUser(username){
 	<a href="logout.php">Logout</a></div>
 	<?php if($_SESSION['admin']==1){?>
 	<p>
-     <button onclick="addUser('','add')">Add New user</button>
+     <button id="addNewUser" >Add New user</button>
     </p>
-		<table class="table">
+		<table id="userTable" class="table">
     <thead>
     <tr>
-        <th scope="col">#</th>
         <th scope="col">UserName</th>
-        <th scope="col">Password</th>
         <th scope="col">Actions</th>
     </tr>
     </thead>
-    <tbody>
-    <?php foreach ($users as $i => $user) { ?>
-        <tr>
-            <th scope="row"><?php echo $i + 1 ?></th>
-            <td><?php echo $user['userName'] ?></td>
-            <td><?php echo  $user['password'] ?></td>
-            <td>
-            	
-               <button onclick="addUser('<?php echo validateInput($user['userName']);?>','edit')">edit </button>
-                <button onclick="confirmationUserDelete('<?php echo validateInput($user['userName']);?>')">Delete</button>
-                
-            </td>
-        </tr>
-    <?php } ?>
+    <tbody id="userBody">
+  
     </tbody>
 </table>
 <?php } ?>
@@ -246,20 +322,20 @@ function deleteUser(username){
 <br/>
 </br/>
 <?php {?>
-    <button onclick="addProduct('','add')">Add New Product</button>
+    <button id="addNewProduct">Add New Product</button>
 <?php } ?>
     <label for="category">Choose a category:</label>
     <select name="category" id="category" onchange="filterTable(this.value)">
+        <option value="all">all</option>
     <?php foreach ($categories as $row){ ?>
       <option value="<?= $row['categoryName'] ?>">
         <?= $row['categoryName']?>
       </option>
       <?php  } ?>
-    <option value="all">all</option>
    </select>
    <br/>
    <br/>
-	<table id ="productTable"class="table">
+	<table id ="productTable"class="productTable">
     <thead>
     <tr>
         <th scope="col">Image</th>
@@ -272,27 +348,7 @@ function deleteUser(username){
     </tr>
     </thead>
     <tbody id="tableBody">
-    <?php foreach ($products as $i => $product) { ?>
-        <tr  >
-            <td>
-
-             <img src=<?php echo 'images/'.$product['image'];?>  style="width:55px;height:56px;"> 
-               
-            </td>
-            <td onclick="addProduct('<?php echo validateInput($product['sku']);?>','update')"><?php echo $product['productName'] ?></td>
-            <td onclick="addProduct('<?php echo validateInput($product['sku']);?>','update')"><?php echo $product['salePrice'] >0 ?$product['salePrice']:$product['regularPrice']?></td>
-            <td onclick="addProduct('<?php echo validateInput($product['sku']);?>','update')"><?php echo $product['sku'];?></td>
-            <td onclick="addProduct('<?php echo validateInput($product['sku']);?>','update')"><?php echo $product['category'] ?></td>
-            <td>
-            	<button onclick="viewProduct('<?php echo validateInput($product['sku']);?>')">View</button>
-            	<?php if($_SESSION['admin']==1){?>
-                   <button onclick="addProduct('<?php echo validateInput($product['sku']);?>','update')">Update</button>
-            
-                <button onclick="confirmationBox('<?php echo validateInput($product['sku']);?>')">Delete</button>
-                <?php } ?>
-            </td>
-        </tr>
-    <?php } ?>
+    
     </tbody>
 </table>
 </body>

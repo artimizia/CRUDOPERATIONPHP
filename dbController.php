@@ -25,8 +25,18 @@
    }
 
    function fetchAllUsers($conn){
+  //  echo "fetchUsers";
    	 $userStmt = "SELECT userName,password,admin from  users";
-   	 return mysqli_query($conn,$userStmt); 
+     $users= mysqli_query($conn,$userStmt); 
+    // print(mysqli_num_rows($users));
+     // foreach($users as $user){
+     //    var_dump($user);
+     // }
+    //  var_dump($users);
+      // while($r = mysqli_query($conn,$userStmt)) {
+      //    $rows[] = $r;
+      // }
+     return $users;
    }
 
    function fetchUser($conn,$username){

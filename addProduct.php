@@ -17,6 +17,7 @@
   try{
     $categories=fetchCategories($conn);
     if($functionType =="update"){
+      echo $sku;
       $sku=$_GET['sku'];
        $products=fetchProduct($conn,$sku);
        if(mysqli_num_rows($products)==0){
@@ -35,10 +36,11 @@
        
     }
 }catch(Exception $e){
-    echo '<script>
-      alert("Error occured");
-      window.location.href="home.php";
-      </script>'; 
+    echo $e;
+    // echo '<script>
+    //   alert("Error occured");
+    //   window.location.href="home.php";
+    //   </script>'; 
   } 
 
   function isFunctionAdd(){

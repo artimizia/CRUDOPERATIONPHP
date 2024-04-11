@@ -27,8 +27,6 @@
         $admin = $user['admin'];
       }
       
-      
-    echo $userName;
     }
   
 
